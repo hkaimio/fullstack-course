@@ -2,28 +2,46 @@ import { useState } from 'react'
 
 const Button = ({text, clickHandler}) => <button onClick={clickHandler}>{text}</button>
 
-const Statistics = ({good, bad, neutral}) => {
+const StatisticsLine = ({text, value, formatter}) => {
+  let valueText
+  if (formatter) {
+    valueText = formatter.format(value)
+  }
+  else
+  {
+    valueText = value
+  }
+  return (<tr><td>{text}</td><td>{valueText}</td></tr>)
+}
+const Statistics = ({ good, bad, neutral }) => {
   const total = good + bad + neutral
 
+  const avgFormatter = new Intl.NumberFormat()
+  const percentFormatter = new Intl.NumberFormat(undefined, {style: "percent"})
   if (total > 0) {
-  return (
-    <>
-      <h1>Statistics</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>Total {good + bad + neutral}</p>
-      <p>Average {(good - bad) / total}</p>    
-    </>
-  )}
-  else {
+    return (
+      <>
+        <h1>Statistics</h1>
+        <table>
+          <tbody>
+            <StatisticsLine text="good" value={good} />
+            <StatisticsLine text="neutral" value={neutral} />
+            <StatisticsLine text="bad" value={bad} />
+            <StatisticsLine text="Total" value={good + bad + neutral} />
+            <StatisticsLine text="Average" value={(good - bad) / total} formatter={avgFormatter}/>
+            <StatisticsLine text="Positive" value={(good) / total} formatter={percentFormatter}/>
+          </tbody>
+        </table>
+      </>
+    )
+  } else {
     return (
       <>
         <p>No feedback given</p>
       </>
     )
   }
-  
+
 }
 const App = () => {
   // tallenna napit omaan tilaansa
