@@ -18,22 +18,45 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+  const [mostVoted, setMostVoted] = useState(0)
 
   const voteAnecdote = (n) => {
     let copy = [...votes]
     copy[n] += 1
     setVotes(copy)
+    setMostVoted(argmax(copy))
   }
 
+  const argmax = (arr) => {
+    let maxValue = 0
+    let maxIndex = 0
+    let n
+    for (n=0; n < arr.length; n++) {
+      if (arr[n] > maxValue) {
+        maxIndex = n
+        maxValue = arr[n]
+      }
+    }
+    return maxIndex
+  }
+
+  const Anecdote = ({number}) => {
+    return (
+    <p>
+      {anecdotes[number]}
+      <br/>
+      Has {votes[number]} votes.
+    </p>
+    )
+  }
+   
   return (
     <div>
-      <p>
-        {anecdotes[selected]}
-        <br/>
-        Has {votes[selected]} votes.
-      </p>
+        <Anecdote number={selected}/>
       <Button clickHandler={() => voteAnecdote(selected)} text="Vote"/>
       <Button clickHandler={() => setSelected(getRandomInt(anecdotes.length))} text="Show anecdote"/>
+      <p>Anecdote with most votes:</p>
+      <Anecdote number={mostVoted}/>
     </div>
   )
 }
