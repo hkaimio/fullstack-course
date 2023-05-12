@@ -6,6 +6,44 @@ const PhonebookEntry = ({person}) => {
   )
 }
 
+const Filter = ({searchStr, handleSearchStrChange}) => {
+  return (
+    <p>search: <input value={searchStr} onChange={handleSearchStrChange}/></p>
+  )
+}
+
+const PersonForm = ({name, phone, handleNameChange, handlePhoneChange, handleAddPerson}) => {
+  return (
+    <form>
+    <div>
+        name: <input value={name} onChange={handleNameChange}/>
+      </div>
+      <div>
+        phone: <input value={phone} onChange={handlePhoneChange}/>
+      </div>
+      <div>
+        <button type="submit" onClick={handleAddPerson}>add</button>
+      </div>
+    </form>
+  )  
+}
+
+const PersonList = ({persons, filterStr}) => {
+  const filteredPersons = 
+    filterStr === "" ? 
+      persons : 
+      persons.filter(person => person.name.toLowerCase().includes(filterStr.toLowerCase()))
+  
+  return (
+    <>
+    {filteredPersons.map((person) => {
+      return (<PhonebookEntry key={person.name} person={person} />)
+    })}
+    </>
+  )
+
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456' },
@@ -63,22 +101,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <p>search: <input value={searchStr} onChange={handleSearchChange}/></p>
-      <form>
-      <div>
-          name: <input value={newName} onChange={handleNewNameChange}/>
-        </div>
-        <div>
-          phone: <input value={newPhone} onChange={handleNewPhoneChange}/>
-        </div>
-        <div>
-          <button type="submit" onClick={addPersonBtnClicked}>add</button>
-        </div>
-      </form>
+      <Filter searchStr={searchStr} handleSearchStrChange={handleSearchChange}/>
+      <PersonForm name={newName} phone={newPhone} handleNameChange={handleNewNameChange} handlePhoneChange={handleNewPhoneChange} handleAddPerson={addPersonBtnClicked}/>
       <h2>Numbers</h2>
-        {filteredPersons.map((person) => {
-          return (<PhonebookEntry key={person.name} person={person} />)
-        })}
+      <PersonList persons={persons} filterStr={searchStr}/>
     </div>
   )
 
