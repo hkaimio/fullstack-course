@@ -8,8 +8,18 @@ const PhonebookEntry = ({person}) => {
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
-  ]) 
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }  ]) 
+
+  const [searchStr, setSearchStr] = useState('')
+
+  const handleSearchChange = (event) => {
+    setSearchStr(event.target.value)
+  }
+
+
   const [newName, setNewName] = useState('')
 
   const handleNewNameChange = (event) => {
@@ -45,9 +55,15 @@ const App = () => {
     setNewPhone("")
   } 
 
+  const filteredPersons = 
+    searchStr === "" ? 
+      persons : 
+      persons.filter(person => person.name.toLowerCase().includes(searchStr.toLowerCase()))
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <p>search: <input value={searchStr} onChange={handleSearchChange}/></p>
       <form>
       <div>
           name: <input value={newName} onChange={handleNewNameChange}/>
@@ -60,7 +76,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-        {persons.map((person) => {
+        {filteredPersons.map((person) => {
           return (<PhonebookEntry key={person.name} person={person} />)
         })}
     </div>
