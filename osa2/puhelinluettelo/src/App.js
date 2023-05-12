@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const PhonebookEntry = ({person}) => {
   return (
-    <p>{person.name}</p>
+    <p>{person.name}: {person.phone}</p>
   )
 }
 
@@ -14,6 +14,12 @@ const App = () => {
 
   const handleNewNameChange = (event) => {
     setNewName(event.target.value)
+  }
+
+  const [newPhone, setNewPhone] = useState('')
+
+  const handleNewPhoneChange = (event) => {
+    setNewPhone(event.target.value)
   }
 
   const addPerson = (person) => {
@@ -31,16 +37,23 @@ const App = () => {
 
   const addPersonBtnClicked = (event) => {
     event.preventDefault()
-    addPerson({name: newName})
+    addPerson({
+      name: newName,
+      phone: newPhone
+    })
     setNewName("")
+    setNewPhone("")
   } 
 
   return (
     <div>
       <h2>Phonebook</h2>
       <form>
-        <div>
+      <div>
           name: <input value={newName} onChange={handleNewNameChange}/>
+        </div>
+        <div>
+          phone: <input value={newPhone} onChange={handleNewPhoneChange}/>
         </div>
         <div>
           <button type="submit" onClick={addPersonBtnClicked}>add</button>
