@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const SERVER_URL = 'http://localhost:3001'
+
 const PhonebookEntry = ({person}) => {
   return (
     <p>{person.name}: {person.number}</p>
@@ -38,7 +40,7 @@ const PersonList = ({persons, filterStr}) => {
   return (
     <>
     {filteredPersons.map((person) => {
-      return (<PhonebookEntry key={person.name} person={person} />)
+      return (<PhonebookEntry key={person.id} person={person} />)
     })}
     </>
   )
@@ -51,10 +53,10 @@ const App = () => {
   useEffect(() => {
     console.log('effect')
     axios
-      .get('http://localhost:3001/db')
+      .get(`${SERVER_URL}/persons`)
       .then(resp => {
         console.log('promise fulfilled', resp.data)
-        setPersons(resp.data.persons)
+        setPersons(resp.data)
       })
   }, [])
   console.log('render')
@@ -86,15 +88,19 @@ const App = () => {
     }
     else
     {
-      setPersons(persons.concat(person))
+      axios.post(`${SERVER_URL}/persons`, person)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+        })
     }
   }
 
   const addPersonBtnClicked = (event) => {
     event.preventDefault()
+    
     addPerson({
       name: newName,
-      phone: newPhone
+      number: newPhone
     })
     setNewName("")
     setNewPhone("")
